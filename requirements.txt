@@ -1,0 +1,9 @@
+sqlalchemy
+python-dotenv
+FastAPI
+pandas
+datetime
+schedule
+requests
+pytest
+google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client

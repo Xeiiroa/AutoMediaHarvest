@@ -1,9 +1,13 @@
-sqlalchemy
+SQLAlchemy
 python-dotenv
-FastAPI
+fastapi
 pandas
 datetime
 schedule
 requests
 pytest
-google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
+uvicorn
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client

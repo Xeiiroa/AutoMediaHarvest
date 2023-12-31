@@ -2,6 +2,7 @@ from tools.envutils import load_variable
 from tools.Google import Create_Service # type: ignore
 import pandas
 
+# function that requests access to users google photos account
 def prompt_permission():
     API_NAME = "photoslibrary"
     API_VERSION = "v1"

@@ -15,7 +15,6 @@ class AlbumRouter():
         #self.album_router=APIRouter()
         self.Data = Data()
         self.service = prompt_permission()
-        #may add create album to init dependeing on app layout
         self.df_albums = self.list_albums()
         self.albumName = self.Data.get_album_name() #! Potential sql error when getting album name
      
@@ -40,6 +39,18 @@ class AlbumRouter():
         df_albums = pd.DataFrame(listAlbums)
         return df_albums
     
+    #search for an album by a specific name
+    def search_album(self):
+        try:
+            filteredalbum=self.df_albums[self.df_albums["title"]==f"{self.albumName}"]["id"][0] #returns album id
+            
+            #returns all album information if id is successful
+            #if not pandas returns a key error which with the try loop returns None
+            response = self.service.albums().get(albumId=filteredalbum).execute() 
+            return response
+        except KeyError:
+            return None
+
     
     
         

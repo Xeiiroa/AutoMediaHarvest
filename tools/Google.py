@@ -5,9 +5,13 @@ from google_auth_oauthlib.flow import Flow, InstalledAppFlow #type: ignore
 from googleapiclient.discovery import build #type: ignore
 from googleapiclient.http import MediaFileUpload #type: ignore
 from google.auth.transport.requests import Request #type: ignore
+
+
+#TODO REMOOVE ALL PRINT STATEMENTS AFTER TESTING
+
  
 def Create_Service(client_secret_file, api_name, api_version, *scopes):
-    print(client_secret_file, api_name, api_version, scopes, sep='-')
+    print(client_secret_file, api_name, api_version, scopes, sep='-') 
     CLIENT_SECRET_FILE = client_secret_file
     API_SERVICE_NAME = api_name
     API_VERSION = api_version
@@ -33,7 +37,7 @@ def Create_Service(client_secret_file, api_name, api_version, *scopes):
             pickle.dump(cred, token)
 
     try:
-        service = build(API_SERVICE_NAME, API_VERSION, credentials=cred)
+        service = build(API_SERVICE_NAME, API_VERSION, credentials=cred,static_discovery=False)
         print(API_SERVICE_NAME, 'service created successfully')
         return service
     except Exception as e:

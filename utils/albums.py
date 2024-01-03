@@ -2,12 +2,16 @@ from db.data_functions import data as Data
 from setup import app
 from setup import prompt_permission
 import pandas as pd
+import requests #type: ignore
+
 
 from fastapi import APIRouter,HTTPException
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from google.oauth2 import service_account #type: ignore
 from google.auth.transport.requests import Request as AuthRequest #type: ignore
+
+from tools.envutils import load_variable
 
 
 class AlbumRouter():
@@ -52,6 +56,43 @@ class AlbumRouter():
             return None
 
     
+    def create_album(self):
+        verifyAlbum = self.search_album() #may not be needed
+        if not verifyAlbum:
+            request_body = {
+            'album': {
+                'title': f"{self.albumName}",
+                'coverPhotoMediaItemId': 'media/Default photo.jpg'}
+            }
+            response_album = self.service.albums().create(body=request_body).execute()
+            
+            #* add enrichments to album 
+            #? (what allows search album to read the album after its been created)
+            
+            request_body = {
+                'newEnrichmentItem': {
+                    'textEnrichment': {
+                        'text': 'This is my faily album'
+                    }
+                },
+                'albumPosition': {
+                    'position': 'LAST_IN_ALBUM'
+                }
+            }
+            
+            response = self.service.albums().addEnrichment(
+                albumId=response_album.get('id'),
+                body=request_body
+            ).execute()
+            return response_album
+        else:
+            return False
+        
+      
+    
+    
+        
+        
     
         
     

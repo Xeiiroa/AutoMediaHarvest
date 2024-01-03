@@ -3,6 +3,7 @@ from setup import app
 from setup import prompt_permission
 import pandas as pd
 import requests #type: ignore
+import logging
 
 
 from fastapi import APIRouter,HTTPException
@@ -20,29 +21,8 @@ class AlbumRouter():
         self.Data = Data()
         self.service = prompt_permission()
         self.df_albums = self.list_albums()
-        self.albumName = self.Data.get_album_name() #! Potential sql error when getting album name
+        self.albumName = self.Data.get_album_name()
      
-    def list_albums(self):
-        response = self.service.albums().list(
-            pageSize=50,
-            excludeNonAppCreatedData=False
-        ).execute()
-
-        listAlbums = response.get("albums")
-        nextPageToken = response.get('nextPageToken')
-
-        while nextPageToken:
-            response = self.service.albums.list(
-                pageSize=50,
-                excludeNonAppCreatedData=False,
-                pageToken=nextPageToken
-            )
-            listAlbums.append(response.get("albums"))
-            nextPageToken = response.get('nextPageToken')
-
-        df_albums = pd.DataFrame(listAlbums)
-        return df_albums
-    
     #search for an album by a specific name
     def search_album(self):
         try:
@@ -84,9 +64,30 @@ class AlbumRouter():
                 albumId=response_album.get('id'), 
                 body=request_body
             ).execute()
-            return response_album.get("id")
+            self.import_image(response_album.get("id"))
+            return 
+            
         else:
             return False
+        
+    
+    
+    
+    
+    
+    def import_image(self, album_Id):
+        media_item_id = self.create_image()
+        
+        request_body = {
+            "mediaItemIds": [
+                media_item_id
+            ]
+        }
+        
+        response = self.service.albums().batchAddMediaItems(
+            albumId = album_Id,
+            body = request_body
+        ).execute()
         
     
     def create_image(self):
@@ -122,6 +123,30 @@ class AlbumRouter():
         }
         
         upload_response = self.service.mediaItems().batchCreate(body=request_body).execute()
+        return upload_response['newMediaItemResults'][0]['mediaItem']['id']
+
+    def list_albums(self):
+        response = self.service.albums().list(
+            pageSize=50,
+            excludeNonAppCreatedData=False
+        ).execute()
+
+        listAlbums = response.get("albums")
+        nextPageToken = response.get('nextPageToken')
+
+        while nextPageToken:
+            response = self.service.albums.list(
+                pageSize=50,
+                excludeNonAppCreatedData=False,
+                pageToken=nextPageToken
+            )
+            listAlbums.append(response.get("albums"))
+            nextPageToken = response.get('nextPageToken')
+
+        df_albums = pd.DataFrame(listAlbums)
+        return df_albums
+    
+    
     
         
         

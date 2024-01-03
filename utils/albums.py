@@ -55,9 +55,9 @@ class AlbumRouter():
         except KeyError:
             return None
 
-    
+   
     def create_album(self):
-        verifyAlbum = self.search_album() #may not be needed
+        verifyAlbum = self.search_album()
         if not verifyAlbum:
             request_body = {
             'album': {
@@ -81,15 +81,47 @@ class AlbumRouter():
             }
             
             response = self.service.albums().addEnrichment(
-                albumId=response_album.get('id'),
+                albumId=response_album.get('id'), 
                 body=request_body
             ).execute()
-            return response_album
+            return response_album.get("id")
         else:
             return False
         
-      
     
+    def create_image(self):
+        import requests #type: ignore
+        import pickle
+        import os
+        
+        image_dir = os.path.join(os.getcwd(), "media") 
+        url = "https://photoslibrary.googleapis.com/v1/uploads"
+        token = pickle.load(open('token_photoslibrary_v1.pickle', 'rb'))
+        
+        headers = {
+            'Authorization': 'Bearer ' + token.token,
+            'Content-type': 'application/octet-stream',
+            'X-Goog-Upload-Protocol': 'raw' # may have to change to actual data type
+            }
+        
+        image_file = os.path.join(image_dir, "Default photo.jpg")
+        headers["X-Goog-Upload-File-Name"] = "Default photo.jpg"
+        
+        img = open(image_file, "rb").read()
+        response = requests.post(url, data=img, headers=headers)
+        
+        request_body  = {
+            'newMediaItems': [
+                {
+                    'description': 'Image to get program to read file',
+                    'simpleMediaItem': {
+                        'uploadToken': response.content.decode('utf-8')
+                    }
+                }
+            ]
+        }
+        
+        upload_response = self.service.mediaItems().batchCreate(body=request_body).execute()
     
         
         

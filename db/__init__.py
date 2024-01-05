@@ -13,7 +13,7 @@ DB_NAME = 'info.db'
 engine = create_engine(f'sqlite:///{DB_NAME}', echo=True)
 
 def create_database():
-    if not path.exists("database/" + DB_NAME):
+    if not path.exists('database/' + DB_NAME):
         global engine
         engine = create_engine(f'sqlite:///{DB_NAME}', echo=True)
         

@@ -22,20 +22,20 @@ class data:
                 print(settings_row.video_save_path)
                 return settings_row.video_save_path
             except SQLAlchemyError as e:
-                logging.error(f"An SQL error has occured when trying to get video save path: {str(e)}")
+                logging.error(f'An SQL error has occured when trying to get video save path: {str(e)}')
                 
     def change_video_save_path(self):
         with Session(engine) as session:
             try:
-                new_savepath = filedialog.askdirectory(title="Select a folder")
-                print(f"savepath updated to {new_savepath}")
+                new_savepath = filedialog.askdirectory(title='Select a folder')
+                print(f'savepath updated to {new_savepath}')
                 new_savepath == None
                 if new_savepath == None:
                     return
                 session.execute(update(Settings).values(video_save_path=new_savepath))
                 session.commit()
             except SQLAlchemyError as e:
-                logging.error(f"An SQL error has occured when trying to change video save path: {str(e)}")
+                logging.error(f'An SQL error has occured when trying to change video save path: {str(e)}')
                 session.rollback()
                 
                 
@@ -45,7 +45,7 @@ class data:
                 settings_row = session.scalar(select(Settings))
                 return settings_row.album_name
             except SQLAlchemyError as e:
-                logging.error(f"An SQL error has occured when trying to retrieve the album name")
+                logging.error(f'An SQL error has occured when trying to retrieve the album name')
                 
                 
                 
@@ -56,6 +56,6 @@ class data:
                 session.commit()
                 return
             except (SQLAlchemyError, ValueError) as e:
-                logging.error(f"An error has occured when attempting to change delay time: {str(e)}")
+                logging.error(f'An error has occured when attempting to change delay time: {str(e)}')
                 session.rollback()
         

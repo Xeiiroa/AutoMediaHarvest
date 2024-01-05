@@ -10,8 +10,8 @@ class Base(DeclarativeBase):
 class Settings(Base):
     default_video_path = os.getcwd()
     
-    __tablename__ = "user_info"
+    __tablename__ = 'user_info'
     
     id: Mapped[int] = mapped_column(primary_key=True)
-    video_save_path: Mapped[str] = mapped_column(String, server_default=default_video_path + "/media")
-    album_name: Mapped[str] = mapped_column(String, server_default="AutoMediaHarvest")
+    video_save_path: Mapped[str] = mapped_column(String, server_default=default_video_path + '/media')
+    album_name: Mapped[str] = mapped_column(String, server_default='AutoMediaHarvest')

@@ -12,7 +12,7 @@ class Settings:
         
         self.defaultSettings = {
             'Savepaths':{
-                'videoSavepath': f'{default_video_path}/media'
+                'videoSavepath': f'{cwd}/media'
             },
             'AlbumName':{
                 'albumName': 'AutoMediaHarvest'
@@ -31,31 +31,27 @@ class Settings:
                 raise FileExistsError
             
             for section_name, section_values in sections.items():
-                config.add_section(section_name)
+                self.config.add_section(section_name)
                 for key, value in section_values.items():
-                    config.set(section_name, key, str(value))             
+                    self.config.set(section_name, key, str(value))             
             
-            with open(fullFilepath, w) as config_file:
-                config.write(config_file)
+            with open(fullFilepath, 'w') as config_file:
+                self.config.write(config_file)
         
         except FileExistsError:
             pass
     
-    def list_settings(self):
-        ...
-        #todo iterate over the sections of the ini file and list all the keys under each section
-        #not sure if i also want to print the current value but its something i can do
-        """
-        ex:
-        Settings from {settings.ini}: can add filename as a param for future versitility
+    def list_settings(self): 
+        self.config.read(self.settingsFilename)
         
-        Savepaths:
-            videoSavepath
+        allKeys = {}
+        
+        for section in self.config.sections():
+            keys = self.config.options(section)
             
-        Albumname:
-            albumName
-        
-        """
+            allKeys[section] = keys
+            
+        return allKeys
     
     
     
@@ -64,42 +60,35 @@ class Settings:
         
         new_savepath = filedialog.askdirectory(title='Select a folder')
         
-        config.set('Savepaths', 'VideoSavepath', new_savepath)
+        self.config.set('Savepaths', 'VideoSavepath', new_savepath)
         
         with open(self.settingFilename, 'w') as config_file:
-            config.write(config_file)
+            self.config.write(config_file)
     
     def get_setting(self, settingName:str):
-        ...
         #todo function that gets the value of a specific named variable
+        try:
         
-        """
-        expected return
+            self.config.read(self.settingsFilename)
+            
+            for section in self.config.sections():
+                if self.config.has_option(section, settingName):
+                    result = self.config.get(section, settingName)
+                    return result
+            raise Exception
+        except Exception:
+            pass
         
-        Error catching
-        Variable not found: return error message
-        """
+        
+
     
             
 
 
 
-config = configparser.ConfigParser()
-config.read('settings.ini')
-
-default_video_path = os.getcwd()
 
 
 
-def default_config(): #creates the programs default settings on its first run
-    defaultSettings = {
-    'videoSavepath': f'{default_video_path}/media',
-    'albumName': 'AutoMediaHarvest'
-    }
-    
-    for setting in defaultSettings:
-        ...
-    
     
 
     

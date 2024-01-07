@@ -4,22 +4,21 @@ import os
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from dotenv import load_dotenv
-from .models import Settings, Base
+from .id_table import MediaIdTable, Base
 
-load_dotenv('.env')
 
-DB_NAME = 'info.db' 
+
+DB_NAME = 'mediaIds.db' 
 engine = create_engine(f'sqlite:///{DB_NAME}', echo=True)
 
 def create_database():
-    if not path.exists('database/' + DB_NAME):
+    if not path.exists('db/' + DB_NAME):
         global engine
         engine = create_engine(f'sqlite:///{DB_NAME}', echo=True)
         
         Base.metadata.create_all(engine)
         
         with Session(engine) as session:
-            default_settings = Settings()
+            default_settings = MediaIdTable()
             session.add(default_settings)
             session.commit()

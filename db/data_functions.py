@@ -20,4 +20,14 @@ class data:
                 session.rollback()
         
     
-        
+    def clear_ids(self): #using an update statment clears all existing ids from database
+        with Session(engine) as session:
+            try:
+                clear = None
+                
+                session.execute(update(MediaIdTable).values(mediaId=clear))
+                session.commit()
+            except SQLAlchemyError as e:
+                logging.error(f'A SQL error has occured when trying to clear ids in table: {str(e)}')
+                session.rollback()
+            

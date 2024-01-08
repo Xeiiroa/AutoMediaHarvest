@@ -41,7 +41,7 @@ class Settings:
         except FileExistsError:
             pass
     
-    def list_settings(self): 
+    def list_settings(self):                                       
         self.config.read(self.settingsFilename)
         
         allKeys = {}
@@ -78,6 +78,17 @@ class Settings:
             raise Exception
         except Exception:
             pass
+        
+    def change_setting(self, settingName, newSettingValue):
+        self.config.read(self.settingsFilename)
+        
+        for section in self.config.sections():
+            if self.config.has_option(section, settingName):
+                
+                self.config.set(section, settingName, newSettingValue)
+                
+                with open(self.settingsFilename, 'w') as config_file:
+                    self.config.write(config_file)
         
         
 

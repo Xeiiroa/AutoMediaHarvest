@@ -8,7 +8,7 @@ from . import engine
 from .id_table import MediaIdTable
 
 
-class data:
+class Data:
     def add_id(self, newId): #checks for duplicate ids and if no match is found adds newId to mediaId column in table
         with Session(engine) as session:
             try:
@@ -30,4 +30,18 @@ class data:
             except SQLAlchemyError as e:
                 logging.error(f'A SQL error has occured when trying to clear ids in table: {str(e)}')
                 session.rollback()
+                
+    def list_ids(self):
+       with Session(engine) as session:
+            try:
+                
+                ids = []
+                for media_id in session.query(MediaIdTable.mediaId).distinct():
+                    ids.append(media_id)
+                
+                return ids
+            
+            except SQLAlchemyError as e:
+                logging.error(f'A SQL error has occured when trying list ids from table: {str(e)}')
+                return None
             

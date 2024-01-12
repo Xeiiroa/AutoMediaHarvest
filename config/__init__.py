@@ -20,7 +20,7 @@ class Settings:
         }
         
         
-        self.create_settings_file(self.settingsFilename, self.default_settings, self.settingsFilepath)
+        self.create_settings_file(self.settingsFilename, self.defaultSettings, self.settingsFilepath)
     
 
     def create_settings_file(self, filepath, sections, destination_directory):
@@ -55,7 +55,7 @@ class Settings:
     
     
     
-    def change_video_savepath(self):
+    def change_video_savepath(self): #ended off here
         self.config.read(self.settingsFilename)
         
         new_savepath = filedialog.askdirectory(title='Select a folder')
@@ -66,7 +66,7 @@ class Settings:
             self.config.write(config_file)
     
     def get_setting(self, settingName:str):
-        #todo function that gets the value of a specific named variable
+        #todo function that gets the value of a specific named variable iterating over all sections to do so (causes problems when it comes to a larger project)
         try:
         
             self.config.read(self.settingsFilename)

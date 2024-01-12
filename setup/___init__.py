@@ -60,7 +60,7 @@ class AutoMediaHarvest:
         if current_day in target_days:
             try:
                 from utils.albums import AlbumRouter as albums
-                from db.data_functions import Data as data
+                from db.data_functions import Data as Db
                 
                 Albums = albums()
                 albumId = self.Albums.search_album()
@@ -68,18 +68,13 @@ class AutoMediaHarvest:
                     raise Exception('Album not found to be cleared under scheduled task')
                 else:
                     self.Albums.clear_album(albumId)
-                    Data = data()
-                    self.Data.clear_ids()
+                    Data = Db() #? not sure if the call of the data module needs to be a self argument
+                    Data.clear_ids() #? ^^^
                     
             except Exception as e:
                 logging.error(f'An error has occured when trying to run Media downloads on schedule: {str(e)}')
                 self.stop_app()
-                
-        
-        """
-        call remove media function from album and from account
-        clear ids from database
-        """
+            
         
         
     def stop_app(self):

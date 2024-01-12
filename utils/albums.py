@@ -1,21 +1,25 @@
-from db.data_functions import data as Data
+from config import Settings as Settings
 from tools.service import prompt_permission
 import pandas as pd
 import requests #type: ignore
 import logging
+from db.data_functions import Data as Db
 
 from google.oauth2 import service_account #type: ignore
 from google.auth.transport.requests import Request as AuthRequest #type: ignore
 
 from tools.envutils import load_variable
 
+#todo Convert functions to read of .ini file instead of depreciated database
+
 
 class AlbumRouter():
     def __init__(self):
-        self.Data = Data()
+        self.Data = Db()
+        self.Settings = Settings() #!needs testing
         self.service = prompt_permission()
         self.df_albums = self.list_albums()
-        self.albumName = self.Data.get_album_name()
+        self.albumName = self.Settings.get_setting("albumName") #! needs testing
      
     #search for an album by a specific name
     def search_album(self):
@@ -143,6 +147,30 @@ class AlbumRouter():
         df_albums = pd.DataFrame(listAlbums)
         return df_albums
     
+    def clear_album(self, album_Id): 
+        """
+        create a body for the google photos batch remove call,
+        
+        open the database and iterate over the media ids
+        append each media id to table
+        
+        call sevice.batch remove with the request body
+        return
+        """
+        albumMediaIds = self.Data.list_ids()
+        
+        request_Body =  {
+            "mediaItemIds": [
+                item for item in albumMediaIds
+                ] #list comprehension for items in album media ids
+        }
+        
+        response = self.service.albums.batchRemoveMediaItems(
+            albumId = album_Id,
+            body = request_Body
+        ).execute()
+        
+        
     
     
         

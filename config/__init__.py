@@ -1,4 +1,5 @@
 import configparser
+from configparser import SafeConfigParser
 import os
 from tkinter import filedialog
 
@@ -8,13 +9,14 @@ class Settings:
         cwd = os.getcwd()
         self.settingsFilepath = cwd + '/config'
         self.settingsFilename = 'settings.ini'
+        self.fullSettingsFilepath = f'{cwd}/config/{self.settingsFilename}'
         self.config = configparser.ConfigParser()
         
         self.defaultSettings = {
-            'Savepaths':{
+            'Downloads':{
                 'videoSavepath': f'{cwd}/media'
             },
-            'AlbumName':{
+            'Albums':{
                 'albumName': 'AutoMediaHarvest'
             }   
         }
@@ -23,7 +25,7 @@ class Settings:
         self.create_settings_file(self.settingsFilename, self.defaultSettings, self.settingsFilepath)
     
 
-    def create_settings_file(self, filepath, sections, destination_directory):
+    def create_settings_file(self, filepath, sections: dict, destination_directory):
         try:
             fullFilepath = os.path.join(destination_directory, filepath)
             
@@ -41,29 +43,39 @@ class Settings:
         except FileExistsError:
             pass
     
-    def list_settings(self):                                       
-        self.config.read(self.settingsFilename)
-        
-        allKeys = {}
-        
-        for section in self.config.sections():
-            keys = self.config.options(section)
+    def list_settings(self):
+        if os.path.isfile(self.fullSettingsFilepath):                                       
+            self.config.read(self.fullSettingsFilepath)
             
-            allKeys[section] = keys
             
-        return allKeys
-    
+            allKeys = {}
+            
+            for section in self.config.sections():
+                keys = self.config.options(section)
+                
+                allKeys[section] = keys
+                
+            return allKeys
+        else:
+            return 404
+   
     
     
     def change_video_savepath(self): #ended off here
-        self.config.read(self.settingsFilename)
-        
+        self.config.read(self.fullSettingsFilepath)
+    
         new_savepath = filedialog.askdirectory(title='Select a folder')
         
-        self.config.set('Savepaths', 'VideoSavepath', new_savepath)
+        self.config.set('Downloads', 'videosavepath', new_savepath)
         
-        with open(self.settingFilename, 'w') as config_file:
+        with open(self.fullSettingsFilepath, 'w') as config_file:
             self.config.write(config_file)
+            
+        return 200
+        
+        
+        
+        
     
     def get_setting(self, settingName:str):
         #todo function that gets the value of a specific named variable iterating over all sections to do so (causes problems when it comes to a larger project)
@@ -80,6 +92,7 @@ class Settings:
             pass
         
     def change_setting(self, settingName, newSettingValue):
+        #todo: add exception handling for if a setting doesnt match the name of any settings in the ini file
         self.config.read(self.settingsFilename)
         
         for section in self.config.sections():

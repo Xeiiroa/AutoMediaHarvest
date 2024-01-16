@@ -8,7 +8,7 @@ from .id_table import MediaIdTable, Base
 
 
 
-DB_NAME = 'mediaIds.db' 
+DB_NAME = 'mediaids.db' 
 engine = create_engine(f'sqlite:///{DB_NAME}', echo=True)
 
 def create_database():

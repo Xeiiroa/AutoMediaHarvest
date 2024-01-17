@@ -28,6 +28,17 @@ class Data:
         except Exception as e:
             logging.error(f'A SQL error has occured when trying search for id from table: {str(e)}')
             
+    def list_all_ids(self):
+        try:
+            self.cur.execute('SELECT mediaid FROM mediaids')
+            values = self.cur.fetchall()
+            id_list = [value[0] for value in values]
+            return id_list
+            
+        except Exception as e:
+            logging.error(f'A SQL error has occured when list all ids from table: {str(e)}')
+            
+            
     
         
          

@@ -52,13 +52,3 @@ class Downloads(Albums): #check that everything that imports classes has the imp
             except Exception as e:
                 logging.error(f'An error occured when trying to process files in save album media function: {str(e)}')
                 pass #! Remove pass when testing period is done
-    
-    def dummy(self):
-        album_id = 'AIlsou33mbES7irrPbu8jEY_k7bpECzokOOt6VbO0mfOGhKbZluDRYoLRg3k2Kg_4sNOF7NueKZg'
-        Data = Db()
-        
-        media_files = self.service.mediaItems().search(body={'albumId': album_id}).execute()['mediaItems']
-        media_id = [item['id'] for item in media_files]
-        
-        print(media_id)
-        

@@ -19,7 +19,6 @@ class Data:
             
     def check_id_exists(self, Id:str):
         try:
-            
             res = self.cur.execute('SELECT mediaid FROM mediaids WHERE mediaid = ?', (Id,))
             if res.fetchone() is None:
                 return False

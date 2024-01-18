@@ -16,22 +16,23 @@ from tools.envutils import load_variable
 class AlbumRouter():
     def __init__(self):
         self.Data = Db()
-        self.Settings = Settings() #!needs testing
+        self.Settings = Settings()
         self.service = prompt_permission()
         self.df_albums = self.list_albums()
-        self.albumName = self.Settings.get_setting("albumName") #! needs testing
+        self.albumName = self.Settings.get_setting('albumName')
      
     #search for an album by a specific name
     def search_album(self):
         try:
-            filteredalbum=self.df_albums[self.df_albums['title']==f'{self.albumName}']['id'][0] #returns album id
+            filteredalbum=self.df_albums[self.df_albums['title']==f'Pfps']['id'][0] #returns album id #!{self.albumName}
             
             #returns all album information if id is successful
             #if not pandas returns a key error which with the try loop returns None
             response = self.service.albums().get(albumId=filteredalbum).execute()
             if response:
+                #*not sure if needed anymore
                 album_id = self.df_albums[self.df_albums['title'] == f'{self.albumName}']['id'].to_string(index=False).strip()
-                return album_id 
+                return str(response.get('id')) #formerly returned album id
             return response #subject for removal after testing #todo if not already i may need to make search album return the albums id(if i need its name ill have to return it in a list/dict or split function)
         except KeyError:
             return None
@@ -147,7 +148,7 @@ class AlbumRouter():
         df_albums = pd.DataFrame(listAlbums)
         return df_albums
     
-    def clear_album(self, album_Id): 
+    def clear_album(self, album_Id):
         """
         create a body for the google photos batch remove call,
         
@@ -157,10 +158,10 @@ class AlbumRouter():
         call sevice.batch remove with the request body
         return
         """
-        albumMediaIds = self.Data.list_ids()
+        albumMediaIds = self.Data.list_all_ids()
         
         request_Body =  {
-            "mediaItemIds": [
+            'mediaItemIds': [
                 item for item in albumMediaIds
                 ] #list comprehension for items in album media ids
         }

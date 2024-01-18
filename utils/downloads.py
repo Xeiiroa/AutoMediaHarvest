@@ -11,12 +11,13 @@ from .albums import AlbumRouter as Albums #type: ignore
 import logging
 
 
-class Downloads(Albums): #check that everything that imports classes has the import statement with 'Downloads' capitalizsed
+class Downloads(): #check that everything that imports classes has the import statement with 'Downloads' capitalizsed
     def __init__(self):
+        self.Albums= Albums()
         self.Config = Config()
         self.savepath = self.Config.get_setting('videoSavepath')
         self.service = prompt_permission() #may not be needed since it inherits from album router
-        self.album_id=self.search_album() #!subject to removal
+        self.album_id=self.Albums.search_album() #!subject to removal
     
     def process_file(self, url:str, destination_folder:str, file_name:str): 
         #* url acts as the place were content is grabbed (in case i forget)

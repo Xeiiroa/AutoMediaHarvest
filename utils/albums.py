@@ -2,13 +2,14 @@ from config import Settings as Settings
 from tools.service import prompt_permission
 import pandas as pd
 import requests #type: ignore
-import logging
 from db.data_functions import Data as Db
 
 from google.oauth2 import service_account #type: ignore
 from google.auth.transport.requests import Request as AuthRequest #type: ignore
 
 from tools.envutils import load_variable
+from tools.error_report import write_error
+
 
 #todo Convert functions to read of .ini file instead of depreciated database
 

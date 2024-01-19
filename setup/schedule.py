@@ -4,6 +4,7 @@ import schedule
 import sys
 import logging
 from datetime import datetime, timedelta
+from tools.error_report import write_error
 
 """
 Tasks to run and there time signatures
@@ -47,8 +48,9 @@ class AutoMediaHarvest:
                     self.save_album_media(albumId)
                      
             except Exception as e:
-                logging.error(f'An error has occured when trying to run Media downloads on schedule: {str(e)}')
-                self.stop_app()
+                error_message = f'An error has occured when trying to run Media downloads on schedule: {str(e)}'
+                logging.error(error_message)
+                self.stop_app(error_message)
         else:
             return
         
@@ -73,7 +75,8 @@ class AutoMediaHarvest:
                     #Data.clear_ids() #? ^^^
                     
             except Exception as e:
-                logging.error(f'An error has occured when trying to run Media downloads on schedule: {str(e)}')
+                error_message=f'An error has occured when trying to run Media downloads on schedule: {str(e)}'
+                logging.error(error_message)
                 self.stop_app()
             
         

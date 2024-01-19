@@ -9,6 +9,8 @@ from db.data_functions import Data as Db
 from config import Settings as Config
 from .albums import AlbumRouter as Albums #type: ignore
 import logging
+from tools.error_report import write_error
+
 
 
 class Downloads(): #check that everything that imports classes has the import statement with 'Downloads' capitalizsed
@@ -51,5 +53,6 @@ class Downloads(): #check that everything that imports classes has the import st
             try:
                 self.process_file(download_url, self.savepath, file_name)
             except Exception as e:
-                logging.error(f'An error occured when trying to process files in save album media function: {str(e)}')
+                error_message=f'An error occured when trying to process files in save album media function: {str(e)}'
+                logging.error(error_message)
                 pass #! Remove pass when testing period is done

@@ -1,6 +1,7 @@
 import logging
 import sqlite3
 from . import DB_NAME
+from tools.error_report import write_error
 
 class Data:
     def __init__(self):
@@ -14,7 +15,9 @@ class Data:
             self.con.commit()
             return 200
         except Exception as e:
-            logging.error(f'A SQL error has occured when trying to add media Id to table: {str(e)}')
+            error_message = f'A SQL error has occured when trying to add media Id to table: {str(e)}'
+            logging.error(error_message)
+            write_error(error_message)
             self.con.rollback()
             
     def check_id_exists(self, Id:str):
@@ -25,7 +28,8 @@ class Data:
             else:
                 return True
         except Exception as e:
-            logging.error(f'A SQL error has occured when trying search for id from table: {str(e)}')
+            error_message = f'A SQL error has occured when trying search for id from table: {str(e)}'
+            logging.error(error_message)
             
     def list_all_ids(self):
         try:
@@ -35,7 +39,8 @@ class Data:
             return id_list
             
         except Exception as e:
-            logging.error(f'A SQL error has occured when list all ids from table: {str(e)}')
+            error_message = f'A SQL error has occured when list all ids from table: {str(e)}'
+            logging.error(error_message)
             
             
     

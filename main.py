@@ -7,6 +7,8 @@ from setup.schedule import AutoMediaHarvest as Script
 import logging
 import datetime
 import os
+from tools.error_report import write_error
+
 
 
 def main():
@@ -24,11 +26,12 @@ def main():
             else:
                 raise ValueError('Command does not exist')
         except Exception as e:
-            logging.error(f'Command does not exist: {str(e)}')
+            error_message=f'Command does not exist: {str(e)}'
+            logging.error(error_message)
         sys.exit()
     else:
         #cwd = os.getcwd()
-        log_file = f'{os.getcwd()}/runtime_logs.txt'
+        log_file = f'{os.getcwd()}/logs/runtime_logs.txt'
         timestamp(log_file)
         Script()
 

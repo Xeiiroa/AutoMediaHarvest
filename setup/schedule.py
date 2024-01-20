@@ -25,8 +25,8 @@ in the case that the script stopps working i want an error popup screen to occur
 
 class AutoMediaHarvest:
     def __init__(self):
-        schedule.every().day.at('4:00').do(self.Download_videos)
-        schedule.every().day.at('9:00').do(self.clear_media_ids)
+        schedule.every().day.at('04:00').do(self.Download_videos)
+        schedule.every().day.at('09:00').do(self.clear_media_ids)
         
         
          

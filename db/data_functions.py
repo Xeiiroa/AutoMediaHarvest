@@ -11,7 +11,7 @@ class Data:
     
     def add_id(self, Id:str):
         try: 
-            self.cur.execute('INSERT INTO mediaids VALUES(?, ?)',(None, Id))
+            self.cur.execute('INSERT INTO mediaids VALUES(?)',(Id,))
             self.con.commit()
             return 200
         except Exception as e:

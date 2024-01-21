@@ -16,16 +16,15 @@ from tools.error_report import write_error
 
 class AlbumRouter():
     def __init__(self):
-        self.Data = Db()
-        self.Settings = Settings()
+        Settings = Settings() #! Potential error to look out for: album name may be called incorrectly from me removing self from self.settings and calling self.setting.get_setting()
         self.service = prompt_permission()
         self.df_albums = self.list_albums()
-        self.albumName = self.Settings.get_setting('albumName')
+        self.albumName = Settings.get_setting('albumName')
      
-    #search for an album by a specific name
+    #search for an album by a specific name if the album does not exits it will return none
     def search_album(self):
         try:
-            filteredalbum=self.df_albums[self.df_albums['title']==f'Pfps']['id'][0] #returns album id #!{self.albumName}
+            filteredalbum=self.df_albums[self.df_albums['title']==f'{self.albumName}']['id'][0] #returns album id 
             
             #returns all album information if id is successful
             #if not pandas returns a key error which with the try loop returns None
@@ -33,8 +32,9 @@ class AlbumRouter():
             if response:
                 #*not sure if needed anymore
                 album_id = self.df_albums[self.df_albums['title'] == f'{self.albumName}']['id'].to_string(index=False).strip()
-                return str(response.get('id')) #formerly returned album id
-            return response #subject for removal after testing #todo if not already i may need to make search album return the albums id(if i need its name ill have to return it in a list/dict or split function)
+                return str(response.get('id')) #album id return
+            else:
+                raise KeyError
         except KeyError:
             return None
 
@@ -67,8 +67,7 @@ class AlbumRouter():
                 albumId=response_album.get('id'), 
                 body=request_body
             ).execute()
-            self.import_image(response_album.get('id'))
-            return 
+            return response_album.get('id')
             
         else:
             return False
@@ -78,9 +77,7 @@ class AlbumRouter():
     
     
     
-    def import_image(self, album_Id):
-        media_item_id = self.create_image()
-        
+    def import_image(self, album_Id, media_item_id):
         request_body = {
             'mediaItemIds': [
                 media_item_id
@@ -91,9 +88,10 @@ class AlbumRouter():
             albumId = album_Id,
             body = request_body
         ).execute()
+        return
         
     
-    def create_image(self):
+    def create_image(self): #creates an image and returns the id of that newly created image
         import requests #type: ignore
         import pickle
         import os
@@ -126,7 +124,7 @@ class AlbumRouter():
         }
         
         upload_response = self.service.mediaItems().batchCreate(body=request_body).execute()
-        return upload_response['newMediaItemResults'][0]['mediaItem']['id']
+        return upload_response['newMediaItemResults'][0]['mediaItem']['id'] 
 
     def list_albums(self):
         response = self.service.albums().list(
@@ -156,10 +154,10 @@ class AlbumRouter():
         open the database and iterate over the media ids
         append each media id to table
         
-        call sevice.batch remove with the request body
-        return
+        call sevice.batch remove with the request body to remove all downloaded media from that album
         """
-        albumMediaIds = self.Data.list_all_ids()
+        Data = Db()
+        albumMediaIds = Data.list_all_ids()
         
         request_Body =  {
             'mediaItemIds': [

@@ -14,7 +14,7 @@ def create_database():
     con = sqlite3.connect(DB_NAME)
     cur = con.cursor()
     try:
-        cur.execute('CREATE TABLE mediaids(ids)')
+        cur.execute('CREATE TABLE mediaids(mediaid)')
     except sqlite3.OperationalError:
         pass
     
